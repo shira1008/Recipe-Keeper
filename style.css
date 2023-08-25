@@ -16,7 +16,7 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: Open Sans;
   background-color: var(--background-color);
   color: var(--text-color);
 }
@@ -56,7 +56,7 @@ body {
 }
 .form-section {
   width: 500px;
-  max-height: 500px;
+  max-height: 510px;
 }
 
 /* Style the form */
@@ -178,6 +178,12 @@ body {
   margin-top: 1rem;
   width: 100px;
   align-self: center;
+}
+
+.error {
+  color: red;
+  font-size: 15px;
+  margin-bottom: 0.1rem;
 }
 
 /* Responsive adjustments */

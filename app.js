@@ -4,9 +4,20 @@ const ingredients = document.getElementById("user-ing");
 const steps = document.getElementById("user-steps");
 const imageURL = document.getElementById("user-img");
 let displayArea = document.querySelector(".recipe-display");
+let errorHandle = document.querySelector(".error");
 
 // Array to store recipes
 let recipes = [];
+
+// function to validate URL
+function isValidURL(url) {
+  try {
+    new URL(url);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 
 // Event listener for form submission
 recipeForm.addEventListener("submit", function (event) {
@@ -15,6 +26,12 @@ recipeForm.addEventListener("submit", function (event) {
   let enteredIngredients = ingredients.value;
   let enteredSteps = steps.value;
   let enterdImg = imageURL.value;
+
+  if (!isValidURL(enterdImg)) {
+    errorHandle.style.color = "red";
+    errorHandle.textContent = "Invalid image  URL";
+    return;
+  }
 
   let newRecipe = {
     name: enteredRecipeName,
@@ -25,7 +42,19 @@ recipeForm.addEventListener("submit", function (event) {
 
   recipes.push(newRecipe);
   displayRecipe(newRecipe, recipes.length - 1); //index of new recipe
-  localStorage.setItem("recipes", JSON.stringify(recipes));
+  try {
+    localStorage.setItem("recipes", JSON.stringify(recipes));
+    errorHandle.textContent = "Recipe added successfully!";
+    errorHandle.style.color = "green";
+  } catch (error) {
+    if (error.name === "QuotaExceededError") {
+      errorHandle.textContent =
+        "Local storage quota exceeded. Unable to save recipe.";
+    } else {
+      errorHandle.textContent = "An error occurred while saving the recipe.";
+    }
+    errorHandle.style.color = "red";
+  }
   recipeName.value = "";
   ingredients.value = "";
   steps.value = "";
@@ -67,7 +96,7 @@ function displayRecipe(recipe, index) {
 // Event listener for delete button clicks
 displayArea.addEventListener("click", function (event) {
   if (event.target.classList.contains("delete-button-img")) {
-    const index = event.target.dataset.index;
+    const index = event.target.parentElement.dataset.index;
     // console.log(index);
     deleteRecipe(index);
   }
