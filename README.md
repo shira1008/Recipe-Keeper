@@ -11,7 +11,7 @@ The Recipe Keeper App is a web application designed to help you manage and displ
 - Remove recipes from your collection.
 - Utilizes local storage to save your recipes.
 
-- 
+
 ## Folder Structure
 
 - `index.html`: Main HTML file containing the app's structure.
