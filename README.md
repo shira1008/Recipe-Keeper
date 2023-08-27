@@ -19,4 +19,5 @@ The Recipe Keeper App is a web application designed to help you manage and displ
 - `app.js`: JavaScript file with the app's functionality.
 
 
-
+The deployed project:
+https://recipe-keeper-shira.netlify.app/
