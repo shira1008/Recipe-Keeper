@@ -163,6 +163,7 @@ function updateDisplay() {
 // Edit a recipe
 displayArea.addEventListener("click", (event) => {
   if (event.target.classList.contains("edit-button")) {
+    // console.log(event.target.dataset);
     const index = event.target.dataset.index;
     editRecipe(index);
   }
@@ -171,6 +172,7 @@ displayArea.addEventListener("click", (event) => {
 // Edit a recipe by index, changing the title and btn text content
 function editRecipe(index) {
   const recipe = recipes[index];
+  // console.log(recipe);
 
   recipeName.value = recipe.name;
   ingredients.value = recipe.ingredients;

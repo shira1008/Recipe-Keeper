@@ -85,7 +85,8 @@ body {
   transition: background-color 0.3s ease-in-out;
 }
 
-.recipe-form button:hover {
+.recipe-form button:hover,
+.edit-button:hover {
   background-color: var(--pink-color);
 }
 
