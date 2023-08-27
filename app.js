@@ -5,6 +5,9 @@ const steps = document.getElementById("user-steps");
 const imageURL = document.getElementById("user-img");
 let displayArea = document.querySelector(".recipe-display");
 let errorHandle = document.querySelector(".error");
+const editBtn = document.querySelector(".edit-button");
+const addFormBtn = document.getElementById("add-form-btn");
+const formTitle = document.querySelector(".form-title");
 
 // Array to store recipes
 let recipes = [];
@@ -22,43 +25,83 @@ function isValidURL(url) {
 // Event listener for form submission
 recipeForm.addEventListener("submit", function (event) {
   event.preventDefault();
+  const editIndex = recipeForm.getAttribute("data-edit-index");
+
   let enteredRecipeName = recipeName.value;
   let enteredIngredients = ingredients.value;
   let enteredSteps = steps.value;
   let enterdImg = imageURL.value;
 
-  if (!isValidURL(enterdImg)) {
-    errorHandle.style.color = "red";
-    errorHandle.textContent = "Invalid image  URL";
-    return;
-  }
-
-  let newRecipe = {
-    name: enteredRecipeName,
-    ingredients: enteredIngredients,
-    steps: enteredSteps,
-    image: enterdImg,
-  };
-
-  recipes.push(newRecipe);
-  displayRecipe(newRecipe, recipes.length - 1); //index of new recipe
   try {
-    localStorage.setItem("recipes", JSON.stringify(recipes));
-    errorHandle.textContent = "Recipe added successfully!";
-    errorHandle.style.color = "green";
-  } catch (error) {
-    if (error.name === "QuotaExceededError") {
-      errorHandle.textContent =
-        "Local storage quota exceeded. Unable to save recipe.";
-    } else {
-      errorHandle.textContent = "An error occurred while saving the recipe.";
+    // Validate that all fields are filled in
+    if (
+      !enteredRecipeName ||
+      !enteredIngredients ||
+      !enteredSteps ||
+      !enterdImg
+    ) {
+      throw new Error("Please fill in all fields.");
     }
+
+    if (!isValidURL(enterdImg)) {
+      errorHandle.style.color = "red";
+      errorHandle.textContent = "Invalid image  URL";
+      return;
+    }
+
+    let newRecipe = {
+      name: enteredRecipeName,
+      ingredients: enteredIngredients,
+      steps: enteredSteps,
+      image: enterdImg,
+    };
+
+    if (editIndex !== null) {
+      // If editing(mean it have an index), update the recipe at the editIndex
+      recipes[editIndex] = newRecipe;
+    } else {
+      // If adding(mean it doesn't have an index), push the new recipe to the array
+      recipes.push(newRecipe);
+    }
+
+    updateDisplay();
+
+    // displayRecipe(newRecipe, recipes.length - 1); //index of new recipe
+    try {
+      localStorage.setItem("recipes", JSON.stringify(recipes));
+      if (formTitle.textContent.includes("Edit Recipe")) {
+        errorHandle.textContent = "Recipe modify successfully!";
+      } else {
+        errorHandle.textContent = "Recipe added successfully!";
+      }
+
+      errorHandle.style.color = "green";
+    } catch (error) {
+      if (error.name === "QuotaExceededError") {
+        errorHandle.textContent =
+          "Local storage quota exceeded. Unable to save recipe.";
+      } else {
+        errorHandle.textContent = "An error occurred while saving the recipe.";
+      }
+      errorHandle.style.color = "red";
+    }
+
+    // Clear form fields
+    recipeName.value = "";
+    ingredients.value = "";
+    steps.value = "";
+    imageURL.value = "";
+
+    // Clear edit index after submission
+    recipeForm.removeAttribute("data-edit-index");
+
+    // Restore button text and form title for adding new recipe
+    addFormBtn.textContent = "Add Recipe";
+    formTitle.textContent = "Add Recipe";
+  } catch (error) {
+    errorHandle.textContent = error.message;
     errorHandle.style.color = "red";
   }
-  recipeName.value = "";
-  ingredients.value = "";
-  steps.value = "";
-  imageURL.value = "";
 });
 
 // Load recipes from local storage on page load
@@ -85,7 +128,7 @@ function displayRecipe(recipe, index) {
       <p class="recipe-ingredients"><span>ingredients: </span> ${recipe.ingredients}</p>
       <ol class="recipe-steps"><span> steps: </span> ${formattedSteps}</ol>
       <img src="${recipe.image}" alt="${recipe.name}">
-      <button class="edit-button" ">Edit</button>
+      <button class="edit-button" data-index="${index}">Edit</button>
       
     </div>
   `;
@@ -115,4 +158,27 @@ function updateDisplay() {
   recipes.forEach((recipe, index) => {
     displayRecipe(recipe, index); // Display each recipe from the array
   });
+}
+
+// Edit a recipe
+displayArea.addEventListener("click", (event) => {
+  if (event.target.classList.contains("edit-button")) {
+    const index = event.target.dataset.index;
+    editRecipe(index);
+  }
+});
+
+// Edit a recipe by index, changing the title and btn text content
+function editRecipe(index) {
+  const recipe = recipes[index];
+
+  recipeName.value = recipe.name;
+  ingredients.value = recipe.ingredients;
+  steps.value = recipe.steps;
+  imageURL.value = recipe.image;
+
+  addFormBtn.textContent = "Save";
+  formTitle.textContent = "Edit Recipe";
+
+  recipeForm.setAttribute("data-edit-index", index);
 }
