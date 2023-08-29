@@ -2,7 +2,7 @@
 
 This project was undertaken as part of a course assignment. While I've explored more advanced UI tools in my journey, this project allowed me to dive into fundamental technologies like HTML, CSS, and JavaScript again :) 
 </br>
-The Recipe Keeper App is a web application designed to help you manage and display your favorite recipes. With this app, you can easily add new recipes, view recipe details, and even delete recipes you no longer need.
+The Recipe Keeper App is a web application designed to help you manage and display your favorite recipes. With this app, you can easily add new recipes, view recipe details, and even delete recipes you no longer need, all your recipes are going to be saved in the local storage.
 
 
 ## Features
